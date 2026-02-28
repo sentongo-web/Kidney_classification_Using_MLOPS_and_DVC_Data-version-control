@@ -1,4 +1,4 @@
-tensorflow==2.13.0
+tensorflow
 keras
 dvc
 numpy
@@ -8,9 +8,9 @@ matplotlib
 seaborn
 jupyterlab
 scipy
-mlflow==2.2.2
+mlflow
 notebook
-python-box==7.0.0
+python-box
 pyYAML
 tqdm
 joblib
@@ -18,5 +18,5 @@ types-PyYAML
 Flask
 Flask-Cors
 gdown
-ensure==1.0.2
+ensure
 -e .
