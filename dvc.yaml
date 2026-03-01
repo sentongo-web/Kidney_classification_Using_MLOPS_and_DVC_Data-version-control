@@ -25,3 +25,21 @@ stages:
       - LEARNING_RATE
     outs:
       - artifacts/prepare_base_model
+
+  training:
+    cmd: python src/cnnClassifier/pipeline/stage_03_model_trainer.py
+    deps:
+      - src/cnnClassifier/pipeline/stage_03_model_trainer.py
+      - src/cnnClassifier/components/model_trainer.py
+      - src/cnnClassifier/config/configuration.py
+      - config/config.yaml
+      - params.yaml
+      - artifacts/data_ingestion/kidney-ct-scan-image
+      - artifacts/prepare_base_model/base_model_updated.h5
+    params:
+      - IMAGE_SIZE
+      - EPOCHS
+      - BATCH_SIZE
+      - AUGMENTATION
+    outs:
+      - artifacts/training/model.h5
