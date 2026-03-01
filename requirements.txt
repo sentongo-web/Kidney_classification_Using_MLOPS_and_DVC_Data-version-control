@@ -19,4 +19,4 @@ Flask
 Flask-Cors
 gdown
 ensure
--e .
+python-dotenv

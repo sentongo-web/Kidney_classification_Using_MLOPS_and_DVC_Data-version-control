@@ -1,0 +1,17 @@
+services:
+  kidney-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: kidney-classifier:latest
+    container_name: kidney-app
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    volumes:
+      # Persist the trained model and data between container restarts
+      - ./artifacts:/app/artifacts
+      # Persist uploaded scan images
+      - ./uploads:/app/uploads
+    restart: unless-stopped

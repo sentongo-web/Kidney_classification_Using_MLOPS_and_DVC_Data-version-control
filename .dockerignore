@@ -1,0 +1,49 @@
+# Git
+.git
+.gitignore
+
+# DVC internals
+.dvc/cache
+.dvc/tmp
+
+# CT scan training images are large and not needed inside the container.
+# The trained model at artifacts/training/model.h5 is kept so the container
+# can serve predictions without a volume mount.
+artifacts/data_ingestion/
+
+# Python caches
+__pycache__
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments and Conda
+.venv
+venv
+env
+*.egg-info
+dist
+build
+
+# Jupyter notebooks (not needed in the container)
+research/
+*.ipynb
+.ipynb_checkpoints
+
+# Logs
+logs/
+*.log
+
+# Secrets (never bake credentials into the image)
+.env
+
+# Test and dev artifacts
+uploads/
+scores.json
+
+# Editor and OS noise
+.vscode
+.idea
+*.DS_Store
+Thumbs.db

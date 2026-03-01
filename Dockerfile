@@ -1,26 +1,34 @@
 FROM python:3.10-slim
 
+# Keeps Python output unbuffered so logs appear immediately in Docker
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONUTF8=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
 WORKDIR /app
 
-# Install system dependencies required by TensorFlow and image libs
+# System libraries required by TensorFlow, OpenCV, and image processing
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libglib2.0-0 \
     libsm6 \
     libxrender1 \
     libxext6 \
+    libgl1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy and install Python dependencies first (layer caching)
+# Install Python dependencies first so this layer is cached between code changes
 COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
 
-# Copy the full project
+# Copy the full project and install the cnnClassifier package
 COPY . .
+RUN pip install -e .
 
-# Install the project package in editable mode
-RUN pip install --no-cache-dir -e .
+# Directory for uploaded scan images at runtime
+RUN mkdir -p uploads
 
-EXPOSE 8080
+EXPOSE 7860
 
 CMD ["python", "app.py"]
