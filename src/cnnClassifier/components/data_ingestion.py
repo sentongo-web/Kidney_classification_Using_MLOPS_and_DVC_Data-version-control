@@ -1,6 +1,6 @@
 import os
 import zipfile
-import urllib.request as request
+import gdown
 from pathlib import Path
 from cnnClassifier import logger
 from cnnClassifier.utils.common import get_size
@@ -13,11 +13,8 @@ class DataIngestion:
 
     def download_file(self):
         if not os.path.exists(self.config.local_data_file):
-            filename, headers = request.urlretrieve(
-                url=self.config.source_URL,
-                filename=self.config.local_data_file
-            )
-            logger.info(f"{filename} downloaded with the following info:\n{headers}")
+            gdown.download(self.config.source_URL, str(self.config.local_data_file), quiet=False, fuzzy=True)
+            logger.info(f"Downloaded data to {self.config.local_data_file}")
         else:
             logger.info(f"File already exists of size: {get_size(Path(self.config.local_data_file))}")
 

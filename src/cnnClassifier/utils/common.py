@@ -36,7 +36,6 @@ def read_yaml(path_to_yaml: Path) -> ConfigBox:
         raise BoxValueError(f"Invalid YAML content in {path_to_yaml}: {e}")
 
 
-@ensure_annotations
 def create_directories(path_to_directories: list[Path], verbose: bool = True) -> None:
     """Creates a list of directories if they do not already exist.
 
@@ -50,7 +49,6 @@ def create_directories(path_to_directories: list[Path], verbose: bool = True) ->
             logger.info(f"Created directory: {path}")
 
 
-@ensure_annotations
 def save_json(path: Path, data: dict[str, Any]) -> None:
     """Saves a dictionary as a JSON file.
 

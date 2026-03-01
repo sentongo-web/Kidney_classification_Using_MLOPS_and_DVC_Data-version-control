@@ -1,3 +1,31 @@
+# ─── Project-specific ────────────────────────────────────────────────────────
+
+# Artifacts (managed by DVC, not git)
+artifacts/
+
+# Logs
+logs/
+*.log
+
+# Model files
+*.h5
+*.keras
+*.pb
+
+# Data files
+*.zip
+*.csv
+*.parquet
+
+# MLflow experiment tracking
+mlruns/
+
+# DVC cache (local only)
+.dvc/cache/
+.dvc/tmp/
+
+# ─── Python ──────────────────────────────────────────────────────────────────
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -56,7 +84,6 @@ cover/
 *.pot
 
 # Django stuff:
-*.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
