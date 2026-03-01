@@ -13,3 +13,17 @@ prepare_base_model:
 training:
   root_dir: artifacts/training
   trained_model_path: artifacts/training/model.h5
+
+evaluation:
+  path_of_model: artifacts/training/model.h5
+  training_data: artifacts/data_ingestion/kidney-ct-scan-image
+  mlflow_uri: "https://dagshub.com/sentongo-web/Kidney_classification_Using_MLOPS_and_DVC_Data-version-control.mlflow"
+  all_params:
+    AUGMENTATION: True
+    IMAGE_SIZE: [224, 224, 3]
+    BATCH_SIZE: 16
+    INCLUDE_TOP: False
+    EPOCHS: 5
+    CLASSES: 2
+    WEIGHTS: imagenet
+    LEARNING_RATE: 0.01
