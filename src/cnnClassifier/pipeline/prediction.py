@@ -9,7 +9,10 @@ class PredictionPipeline:
         self.filename = filename
 
     def predict(self):
-        model = load_model(os.path.join("artifacts", "training", "model.h5"))
+        keras_path = os.path.join("artifacts", "training", "model.keras")
+        h5_path    = os.path.join("artifacts", "training", "model.h5")
+        model_path = keras_path if os.path.isfile(keras_path) else h5_path
+        model = load_model(model_path)
 
         img = image.load_img(self.filename, target_size=(224, 224))
         img_array = image.img_to_array(img)
