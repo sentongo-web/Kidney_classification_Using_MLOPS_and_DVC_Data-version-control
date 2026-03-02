@@ -670,6 +670,7 @@
       try {
         const res  = await fetch('/predict', { method: 'POST', body: fd });
         const data = await res.json();
+        if (!res.ok) throw new Error(data.error || `Server error ${res.status}`);
         const pred = data[0]?.image || 'Unknown';
 
         const resultEl = document.getElementById('result');
@@ -695,8 +696,8 @@
         document.getElementById('confPct').textContent  = conf + '%';
         resultEl.style.display = 'block';
 
-      } catch {
-        alert('Something went wrong during analysis. Please try again.');
+      } catch (err) {
+        alert('Something went wrong during analysis.\n\n' + (err?.message || err));
       } finally {
         document.getElementById('loading').style.display = 'none';
         document.getElementById('predictBtn').disabled   = false;
