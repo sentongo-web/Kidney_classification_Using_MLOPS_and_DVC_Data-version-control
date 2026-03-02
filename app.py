@@ -10,7 +10,21 @@ CORS(app)
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-MODEL_PATH = os.path.join("artifacts", "training", "model.h5")
+# Resolve model path once — prefer .keras (Keras 3 native), fall back to .h5
+_keras_path = os.path.join("artifacts", "training", "model.keras")
+_h5_path    = os.path.join("artifacts", "training", "model.h5")
+MODEL_PATH  = _keras_path if os.path.isfile(_keras_path) else _h5_path
+
+# Load the model once at startup so every request reuses the same in-memory model
+_MODEL = None
+_MODEL_ERROR = None
+try:
+    from tensorflow.keras.models import load_model
+    _MODEL = load_model(MODEL_PATH)
+    print(f"[startup] Model loaded from {MODEL_PATH}")
+except Exception as _e:
+    _MODEL_ERROR = str(_e)
+    print(f"[startup] WARNING: model failed to load — {_MODEL_ERROR}")
 
 
 @app.route("/", methods=["GET"])
@@ -20,12 +34,13 @@ def home():
 
 @app.route("/health", methods=["GET"])
 def health():
-    model_exists = os.path.isfile(MODEL_PATH)
+    ok = _MODEL is not None
     return jsonify({
-        "status": "ok" if model_exists else "degraded",
-        "model_found": model_exists,
+        "status": "ok" if ok else "degraded",
+        "model_loaded": ok,
         "model_path": os.path.abspath(MODEL_PATH),
-    }), 200 if model_exists else 503
+        "error": _MODEL_ERROR,
+    }), 200 if ok else 503
 
 
 @app.route("/train", methods=["GET", "POST"])
@@ -36,6 +51,9 @@ def train():
 
 @app.route("/predict", methods=["POST"])
 def predict():
+    if _MODEL is None:
+        return jsonify({"error": f"Model not loaded: {_MODEL_ERROR}"}), 503
+
     if "file" not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
 
@@ -46,7 +64,7 @@ def predict():
     filepath = os.path.join(UPLOAD_FOLDER, file.filename)
     try:
         file.save(filepath)
-        pipeline = PredictionPipeline(filepath)
+        pipeline = PredictionPipeline(filepath, model=_MODEL)
         result = pipeline.predict()
         return jsonify(result)
     except Exception as e:
