@@ -3,6 +3,10 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import os
 
+# Minimum softmax confidence required to trust a prediction.
+# Below this threshold the image is likely not a kidney CT scan.
+CONFIDENCE_THRESHOLD = 0.80
+
 
 class PredictionPipeline:
     def __init__(self, filename, model=None):
@@ -23,6 +27,12 @@ class PredictionPipeline:
         img_array = image.img_to_array(img)
         img_array = np.expand_dims(img_array, axis=0) / 255.0
 
-        result = np.argmax(model.predict(img_array), axis=1)
+        predictions = model.predict(img_array)
+        confidence  = float(np.max(predictions))
+        class_idx   = int(np.argmax(predictions, axis=1)[0])
 
-        return [{"image": "Tumor" if result[0] == 1 else "Normal"}]
+        if confidence < CONFIDENCE_THRESHOLD:
+            return [{"image": "InvalidImage", "confidence": round(confidence, 4)}]
+
+        return [{"image": "Tumor" if class_idx == 1 else "Normal",
+                 "confidence": round(confidence, 4)}]

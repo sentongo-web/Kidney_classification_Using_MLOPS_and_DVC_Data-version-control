@@ -24,6 +24,9 @@
       --danger:       #ef4444;
       --danger-bg:    #fef2f2;
       --danger-bdr:   #fca5a5;
+      --warning:      #f59e0b;
+      --warning-bg:   #fffbeb;
+      --warning-bdr:  #fcd34d;
       --shadow:       0 4px 32px rgba(15,23,42,0.08);
       --shadow-lg:    0 8px 48px rgba(15,23,42,0.14);
       --radius:       18px;
@@ -46,6 +49,9 @@
       --danger:       #f87171;
       --danger-bg:    #2d0a0a;
       --danger-bdr:   #7f1d1d;
+      --warning:      #fbbf24;
+      --warning-bg:   #1c1500;
+      --warning-bdr:  #78350f;
       --shadow:       0 4px 32px rgba(0,0,0,0.45);
       --shadow-lg:    0 8px 48px rgba(0,0,0,0.6);
     }
@@ -250,8 +256,11 @@
       from { opacity: 0; transform: translateY(12px) scale(0.98); }
       to   { opacity: 1; transform: translateY(0) scale(1); }
     }
-    #result.normal { background: var(--success-bg); border: 1px solid var(--success-bdr); }
-    #result.tumor  { background: var(--danger-bg);  border: 1px solid var(--danger-bdr); }
+    #result.normal   { background: var(--success-bg);  border: 1px solid var(--success-bdr); }
+    #result.tumor    { background: var(--danger-bg);   border: 1px solid var(--danger-bdr); }
+    #result.invalid  { background: var(--warning-bg);  border: 1px solid var(--warning-bdr); }
+    #result.invalid .res-title { color: var(--warning); }
+    #result.invalid .conf-wrap { display: none; }
     .res-row { display: flex; align-items: flex-start; gap: 14px; }
     .res-ico { font-size: 1.9rem; flex-shrink: 0; line-height: 1; }
     .res-title { font-size: 1.15rem; font-weight: 800; margin-bottom: 3px; }
@@ -408,7 +417,17 @@
 
         <div>
           <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
-            <div class="dz-icon">&#x1FAC1;</div>
+            <div class="dz-icon">
+              <!-- Kidney bean icon: convex lateral side, concave medial (hilum) side -->
+              <svg width="52" height="64" viewBox="0 0 52 64" fill="none" stroke="currentColor"
+                   stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+                   style="opacity:0.55;display:block;margin:0 auto 4px">
+                <path d="M26 4 C41 4 49 15 49 29 C49 46 41 60 26 61
+                         C15 60 7 54 5 45 C3 38 5 31 9 28
+                         C12 25 12 22 9 18 C6 14 10 4 26 4 Z"/>
+                <path d="M12 29 C15 24 15 18 12 13" stroke-width="2.2"/>
+              </svg>
+            </div>
             <p class="dz-hint">
               Drop your CT scan image here<br/>
               or <b>click to choose a file</b>
@@ -674,6 +693,17 @@
         const pred = data[0]?.image || 'Unknown';
 
         const resultEl = document.getElementById('result');
+
+        if (pred === 'InvalidImage') {
+          resultEl.className = 'invalid';
+          document.getElementById('resIco').textContent   = '\u26A0\uFE0F';
+          document.getElementById('resTitle').textContent = 'Wrong Image Detected';
+          document.getElementById('resSub').textContent   =
+            'Sorry — this does not appear to be a kidney CT scan. Please upload a valid grayscale CT scan of a kidney and try again.';
+          resultEl.style.display = 'block';
+          return;
+        }
+
         const conf = (pred === 'Tumor'
           ? 87 + Math.random() * 11
           : 85 + Math.random() * 13).toFixed(1);
