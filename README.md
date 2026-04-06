@@ -37,7 +37,7 @@ Upload a kidney CT scan image and receive an instant classification — Normal o
 
 This is a production-style, end-to-end machine learning project that classifies kidney CT scan images as either **Normal** or **Tumor**. The model is only one piece of the story. The real focus is everything surrounding it: a fully reproducible DVC pipeline, experiment tracking with MLflow and DagsHub, a configuration-driven codebase, a Flask web application, Docker containerisation, and live deployment on Hugging Face Spaces with GitHub Actions CI/CD.
 
-It was built to demonstrate what a genuine MLOps workflow looks like in practice — not just the notebook that produces a metric, but the entire system that allows a model to be trained, evaluated, versioned, and served reliably.
+It was built to demonstrate what a genuine MLOps workflow looks like in practice and not just a notebook that produces a metric, but the entire system that allows a model to be trained, evaluated, versioned, and served reliably.
 
 ---
 This project was developed independently as applied research into medical imaging AI, with the explicit goal of building decision support tools for clinical practice.
