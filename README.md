@@ -40,6 +40,8 @@ This is a production-style, end-to-end machine learning project that classifies 
 It was built to demonstrate what a genuine MLOps workflow looks like in practice — not just the notebook that produces a metric, but the entire system that allows a model to be trained, evaluated, versioned, and served reliably.
 
 ---
+This project was developed independently as applied research into medical imaging AI, with the explicit goal of building decision support tools for clinical practice.
+---
 
 ## The Problem
 
