@@ -390,4 +390,4 @@ Paul is currently open to research positions and industry roles where he can con
 
 - GitHub: [github.com/sentongo-web](https://github.com/sentongo-web)
 - LinkedIn: [linkedin.com/in/paul-sentongo-885041284](https://www.linkedin.com/in/paul-sentongo-885041284/)
-- Email: [nankyamaggie8@gmail.com](mailto:nankyamaggie8@gmail.com)
+- Email: [sentongopol@gmail.com](mailto:sentongopol@gmail.com)
