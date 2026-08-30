@@ -27,3 +27,9 @@ evaluation:
     CLASSES: 2
     WEIGHTS: imagenet
     LEARNING_RATE: 0.01
+
+explainability:
+  root_dir: artifacts/explainability
+  gradcam_output_dir: artifacts/explainability/gradcam
+  counterfactual_output_dir: artifacts/explainability/counterfactuals
+  target_layer_name: "block5_conv3"

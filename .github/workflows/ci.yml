@@ -31,6 +31,9 @@ jobs:
           pip install -e .
           python -c "from cnnClassifier import logger; logger.info('Package import OK')"
 
+      - name: Run test suite
+        run: pytest tests/ -v
+
       - name: Check source structure
         run: |
           python -c "

@@ -1,6 +1,12 @@
 from cnnClassifier.constants import CONFIG_FILE_PATH, PARAMS_FILE_PATH
 from cnnClassifier.utils.common import read_yaml, create_directories
-from cnnClassifier.entity.config_entity import DataIngestionConfig, PrepareBaseModelConfig, TrainingConfig, EvaluationConfig
+from cnnClassifier.entity.config_entity import (
+    DataIngestionConfig,
+    PrepareBaseModelConfig,
+    TrainingConfig,
+    EvaluationConfig,
+    ExplainabilityConfig,
+)
 from pathlib import Path
 
 
@@ -64,4 +70,18 @@ class ConfigurationManager:
             mlflow_uri=config.mlflow_uri,
             params_image_size=self.params.IMAGE_SIZE,
             params_batch_size=self.params.BATCH_SIZE,
+        )
+
+    def get_explainability_config(self) -> ExplainabilityConfig:
+        config = self.config.explainability
+        create_directories([
+            config.root_dir,
+            config.gradcam_output_dir,
+            config.counterfactual_output_dir,
+        ])
+        return ExplainabilityConfig(
+            root_dir=Path(config.root_dir),
+            gradcam_output_dir=Path(config.gradcam_output_dir),
+            counterfactual_output_dir=Path(config.counterfactual_output_dir),
+            target_layer_name=config.target_layer_name,
         )

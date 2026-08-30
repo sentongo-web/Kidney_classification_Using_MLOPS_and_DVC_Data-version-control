@@ -43,3 +43,11 @@ class EvaluationConfig:
     mlflow_uri: str
     params_image_size: list
     params_batch_size: int
+
+
+@dataclass(frozen=True)
+class ExplainabilityConfig:
+    root_dir: Path
+    gradcam_output_dir: Path
+    counterfactual_output_dir: Path
+    target_layer_name: str

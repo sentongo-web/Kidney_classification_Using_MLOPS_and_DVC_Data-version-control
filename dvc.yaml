@@ -59,3 +59,12 @@ stages:
     metrics:
       - scores.json:
           cache: false
+
+  explainability:
+    cmd: python src/cnnClassifier/pipeline/stage_05_explainability.py
+    deps:
+      - artifacts/training/model.h5
+      - config/config.yaml
+      - src/cnnClassifier/pipeline/stage_05_explainability.py
+    outs:
+      - artifacts/explainability

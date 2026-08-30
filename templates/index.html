@@ -275,6 +275,34 @@
     #result.normal .conf-fill { background: var(--success); }
     #result.tumor  .conf-fill { background: var(--danger); }
 
+    /* XAI dashboard */
+    .xai-dashboard {
+      display: none;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .xai-dashboard.show { display: grid; }
+    @media (max-width: 760px) { .xai-dashboard { grid-template-columns: 1fr; } }
+    .xai-pane {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      text-align: center;
+    }
+    .xai-pane.xai-danger  { border-color: var(--danger-bdr); }
+    .xai-pane.xai-success { border-color: var(--success-bdr); }
+    .xai-pane h5 { font-size: 0.8rem; font-weight: 700; margin-bottom: 10px; }
+    .xai-pane.xai-danger h5  { color: var(--danger); }
+    .xai-pane.xai-success h5 { color: var(--success); }
+    .xai-pane img {
+      width: 100%; border-radius: 10px; border: 1px solid var(--border); display: block;
+    }
+    .xai-pane small {
+      display: block; margin-top: 8px; font-size: 0.72rem; color: var(--text-muted); line-height: 1.55;
+    }
+
     /* Disclaimer */
     .disclaimer {
       margin-top: 20px;
@@ -491,6 +519,23 @@
         </div>
       </div>
 
+      <div class="xai-dashboard" id="xaiDashboard">
+        <div class="xai-pane">
+          <h5>Original CT Scan</h5>
+          <img id="xaiRaw" src="" alt="Original CT scan" />
+        </div>
+        <div class="xai-pane xai-danger">
+          <h5>Grad-CAM Spatial Attention</h5>
+          <img id="xaiGradcam" src="" alt="Grad-CAM attention map" />
+          <small>Highlights the tissue regions that drove the tumor classification.</small>
+        </div>
+        <div class="xai-pane xai-success">
+          <h5>Counterfactual Simulation</h5>
+          <img id="xaiCounterfactual" src="" alt="Counterfactual simulation" />
+          <small>Gradient-optimized pixel morphology illustrating a healthy-tissue baseline.</small>
+        </div>
+      </div>
+
       <div class="disclaimer">
         <strong>Important notice:</strong> This tool is intended for research and educational use only.
         It is not a certified medical device and should never replace the judgement of a qualified
@@ -693,6 +738,7 @@
         const pred = data[0]?.image || 'Unknown';
 
         const resultEl = document.getElementById('result');
+        const xaiDashboard = document.getElementById('xaiDashboard');
 
         if (pred === 'InvalidImage') {
           resultEl.className = 'invalid';
@@ -700,6 +746,7 @@
           document.getElementById('resTitle').textContent = 'Wrong Image Detected';
           document.getElementById('resSub').textContent   =
             'Sorry — this does not appear to be a kidney CT scan. Please upload a valid grayscale CT scan of a kidney and try again.';
+          xaiDashboard.classList.remove('show');
           resultEl.style.display = 'block';
           return;
         }
@@ -725,6 +772,15 @@
         document.getElementById('confFill').style.width = conf + '%';
         document.getElementById('confPct').textContent  = conf + '%';
         resultEl.style.display = 'block';
+
+        if (pred === 'Tumor' && data[0]?.gradcam) {
+          document.getElementById('xaiRaw').src = document.getElementById('previewImg').src;
+          document.getElementById('xaiGradcam').src = `data:image/png;base64,${data[0].gradcam}`;
+          document.getElementById('xaiCounterfactual').src = `data:image/png;base64,${data[0].counterfactual}`;
+          xaiDashboard.classList.add('show');
+        } else {
+          xaiDashboard.classList.remove('show');
+        }
 
       } catch (err) {
         alert('Something went wrong during analysis.\n\n' + (err?.message || err));
